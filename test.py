@@ -14,6 +14,8 @@ except ImportError:
 
 def do_stuff():
 	#we are going to run some test of the mymodel module here
+	mymodel.add_score("9366451048",2)
+	mymodel.add_score("9366451048",2,3)
 	mymodel.get_score("9366451048")
 	mymodel.get_score("9366451048",1)
 

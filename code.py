@@ -18,6 +18,8 @@ urls = (
 	'/create_player', 'create_player',
 	'/add_score', 'add_score',
 	'/create_round', 'create_round',
+	'/join_round', 'join_round',
+	'/get_score', 'get_score',
 )
 
 class index:
@@ -26,15 +28,33 @@ class index:
 
 class create_player:
 	def POST(self):
-		return "Adding player... " 
-
-	def GET(self):
-		return "Getting players..."
+		data = web.input()
+		response = mymodel.create_player(data.number)
+		return response
 
 class create_round:
 	def POST(self):
-		return "<h1>Recorded " + user_data.score + " on hole " + user_data.hole + "</h1>"
-	
+		data = web.input()
+		response = mymodel.create_round(data.number)
+		return response
+class add_score:
+	def POST(self):
+		data = web.input()
+		print "number=%s and score=%s" % (data.number,data.score)
+		response = mymodel.add_score(data.number,data.score,2)		
+		return response
+
+class join_round:
+	def POST(self):
+		data = web.input()
+		response = mymodel.join_round(data.number, data.round_id)
+		return response
+
+class get_score:
+	def GET(self):
+		data = web.input()
+		response = mymodel.get_score(data.number, data.round_id)
+		return response
 
 if __name__ == "__main__":
 	app = web.application(urls, globals())
