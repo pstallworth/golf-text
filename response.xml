@@ -1,0 +1,5 @@
+$def with (res)
+<?xml version="1.0" encoding="UTF-8" ?>
+<Response>
+  <Message src="9355551234" dst="9364682601">$res</Message>
+</Response>
