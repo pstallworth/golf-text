@@ -12,7 +12,9 @@ except ImportError:
     finally:
         sys.path.remove(os.path.dirname(__file__))
 
+
 web.config.debug = True
+
 urls = (
 	'/', 'index',
 	'/create_player', 'create_player',
@@ -22,21 +24,24 @@ urls = (
 	'/get_score', 'get_score',
 )
 
+render = web.template.render('/var/www/templates', cache=False)
+
 class index:
 	def GET(self):
-		return "Hello, world, from web.py!"
+		web.header('Content-Type', 'text/xml')
+		return render.response()
 
 class create_player:
 	def POST(self):
 		data = web.input()
-		response = mymodel.create_player(data.number)
-		return response
+		res = mymodel.create_player(data.number)
+		return render.response(res)
 
 class create_round:
 	def POST(self):
 		data = web.input()
-		response = mymodel.create_round(data.number)
-		return response
+		res = mymodel.create_round(data.number)
+		return render.response(res)
 class add_score:
 	def POST(self):
 		data = web.input()
