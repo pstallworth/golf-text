@@ -1,0 +1,5 @@
+$def with (number,res)
+<?xml version="1.0" encoding="UTF-8" ?>
+<Response>
+  <Message src="my plivo number" dst="$number">$res</Message>
+</Response>
