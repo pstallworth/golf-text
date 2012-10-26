@@ -27,7 +27,7 @@ def create_round(number):
 	rid = len(rounds)+1
 	db.insert("rounds", number=number, round_id=rid, score=0)
 	join_round(number,rid)
-
+	return rid
 
 def join_round(number, round_id):
 
@@ -35,8 +35,12 @@ def join_round(number, round_id):
 		# Number not in db, cannot join round, don't assume and add them yet
 		return "invalid number to join_round()"
 	elif not valid_round(round_id):
-		return "invlaid round id"
+		return "invalid round id"
 	else:
+		result = db.where("rounds",number=number,round_id=round_id)
+		if not result:
+			db.insert("rounds",number=number,round_id=round_id,score=0)
+
 		db.update("players",where="number=$number",vars=locals(),current_round=round_id)
 		return "joined round"
 

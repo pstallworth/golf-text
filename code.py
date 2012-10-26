@@ -12,6 +12,15 @@ except ImportError:
     finally:
         sys.path.remove(os.path.dirname(__file__))
 
+try:
+	import controller
+except ImportError:
+	sys.path.append(os.path.dirname(__file__))
+	try:
+		import controller
+	finally:
+		sys.path.remove(os.path.dirname(__file__))
+
 
 web.config.debug = True
 
@@ -29,7 +38,12 @@ render = web.template.render('/var/www/templates', cache=False)
 class index:
 	def GET(self):
 		web.header('Content-Type', 'text/xml')
-		return render.response()
+		return render.response("Hello Index Page")
+	def POST(self):
+		data = web.input()
+		res = controller.handle(data.From, data.Text, data.Type)
+		web.header('Content-Type', 'text/xml')
+		return render.response(data.From, res)
 
 class create_player:
 	def POST(self):
@@ -60,10 +74,6 @@ class get_score:
 		data = web.input()
 		response = mymodel.get_score(data.number, data.round_id)
 		return response
-
-if __name__ == "__main__":
-	app = web.application(urls, globals())
-	app.run()	
 
 app = web.application(urls, globals(), autoreload=False)
 application = app.wsgifunc()
