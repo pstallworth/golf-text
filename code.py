@@ -22,7 +22,7 @@ except ImportError:
 		sys.path.remove(os.path.dirname(__file__))
 
 
-web.config.debug = True
+web.config.debug = False
 
 urls = (
 	'/', 'index',
@@ -36,44 +36,14 @@ urls = (
 render = web.template.render('/var/www/templates', cache=False)
 
 class index:
-	def GET(self):
+	def GET(self,data):
 		web.header('Content-Type', 'text/xml')
-		return render.response("Hello Index Page")
+#		return render.response("19366451048", data)
 	def POST(self):
 		data = web.input()
 		res = controller.handle(data.From, data.Text, data.Type)
 		web.header('Content-Type', 'text/xml')
 		return render.response(data.From, res)
-
-class create_player:
-	def POST(self):
-		data = web.input()
-		res = mymodel.create_player(data.number)
-		return render.response(res)
-
-class create_round:
-	def POST(self):
-		data = web.input()
-		res = mymodel.create_round(data.number)
-		return render.response(res)
-class add_score:
-	def POST(self):
-		data = web.input()
-		print "number=%s and score=%s" % (data.number,data.score)
-		response = mymodel.add_score(data.number,data.score,2)		
-		return response
-
-class join_round:
-	def POST(self):
-		data = web.input()
-		response = mymodel.join_round(data.number, data.round_id)
-		return response
-
-class get_score:
-	def GET(self):
-		data = web.input()
-		response = mymodel.get_score(data.number, data.round_id)
-		return response
 
 app = web.application(urls, globals(), autoreload=False)
 application = app.wsgifunc()
