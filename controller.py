@@ -30,7 +30,8 @@ def handle(number, message, mtype):
 	try:	
 		if cmd_str[0] == "score" and cmd_str[1] is not None:
 			mymodel.add_score(number,cmd_str[1])
-			return "score added"
+			return
+#			return "score added"
 	except IndexError:
 		return mymodel.get_score(number)
 

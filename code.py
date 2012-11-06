@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys, os
 import web
-from urlparse import urlparse, parse_qsl
 
 try:
     import mymodel
@@ -41,7 +40,7 @@ class index:
 #		return render.response("19366451048", data)
 	def POST(self):
 		data = web.input()
-		res = controller.handle(data.From, data.Text, data.Type)
+		res = controller.handle(data.From, data.Text.lower(), data.Type)
 		web.header('Content-Type', 'text/xml')
 		return render.response(data.From, res)
 
