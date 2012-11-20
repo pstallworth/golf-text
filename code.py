@@ -35,8 +35,12 @@ urls = (
 render = web.template.render('/var/www/templates', cache=False)
 
 class index:
-	def GET(self,data):
-		web.header('Content-Type', 'text/xml')
+	def GET(self):
+		web.header('Content-Type', 'text/html')
+		return "<h1>Hello, world</h1>"
+#	def GET(self,data):
+#		web.header('Content-Type', 'text/xml')
+#		return "Hello, world"
 #		return render.response("19366451048", data)
 	def POST(self):
 		data = web.input()
@@ -45,4 +49,11 @@ class index:
 		return render.response(data.From, res)
 
 app = web.application(urls, globals(), autoreload=False)
-application = app.wsgifunc()
+#application = app.wsgifunc()
+
+def is_test():
+	if 'WEBPY_ENV' in os.environ:
+		return os.environ['WEBPY_ENV'] == 'test'
+
+if (not is_test()) and  __name__ == "__main__": app.run()
+
