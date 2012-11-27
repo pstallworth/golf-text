@@ -16,23 +16,14 @@ def handle(number, message, mtype):
 	if cmd_str[0] == "create":
 		mymodel.create_player(number)
 		return "player created" 
-
-	if cmd_str[0] == "round":
+	elif cmd_str[0] == "round":
 		round_id = mymodel.create_round(number)
 		return "round id %s" % round_id
-
-	try:
-		if cmd_str[0] == "join":
-			return mymodel.join_round(number, cmd_str[1])
-	except IndexError:
-		return "invalid or no round given to join"
-
-	try:	
-		if cmd_str[0] == "score" and cmd_str[1] is not None:
-			mymodel.add_score(number,cmd_str[1])
-			return
-#			return "score added"
-	except IndexError:
+	elif cmd_str[0] == "join" and len(cmd_str) == 2:
+		return mymodel.join_round(number, cmd_str[1])
+	elif cmd_str[0] == "score" and len(cmd_str) == 2:
+		return mymodel.add_score_new(number,int(cmd_str[1]))
+	elif cmd_str[0] == "score" and len(cmd_str) == 1:
 		return mymodel.get_score(number)
-
-	return "invalid command"
+	else:
+		return "invalid command"

@@ -49,7 +49,7 @@ class index:
 		return render.response(data.From, res)
 
 app = web.application(urls, globals(), autoreload=False)
-#application = app.wsgifunc()
+application = app.wsgifunc()
 
 def is_test():
 	if 'WEBPY_ENV' in os.environ:

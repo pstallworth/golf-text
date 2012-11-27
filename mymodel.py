@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 import web
 # Should db connection go somewhere else?
-#db = web.database(dbn="mysql", db="golf", user="root", pw="passw0rd")
 db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
 
 
-def create_player(phone_number):
+def create_player(phone_number, name="golfer"):
 
 	players = db.select("players",vars=locals(), what="number", where="number=$phone_number")
 
 	if not players:
 		# Player not found so add to database
-		db.insert("players",number=phone_number)
+		db.insert("players",number=phone_number, name=name)
 		return "added player"
 	else:
 		# Player found, do not add
@@ -25,28 +24,59 @@ def create_round(number):
 
 	rounds = db.select("rounds",what="round_id")
 	rid = len(rounds)+1
-	db.insert("rounds", number=number, round_id=rid, score=0)
+	db.insert("rounds", number=number, round_id=rid, score=0, current_hole=1)
 	join_round(number,rid)
 	return rid
 
 def join_round(number, round_id):
 
 	if not check_player(number):
-		# Number not in db, cannot join round, don't assume and add them yet
+		# Number not in db, cannot join round, don't assume and don't add them yet
 		return "invalid number to join_round()"
 	elif not valid_round(round_id):
 		return "invalid round id"
 	else:
 		result = db.where("rounds",number=number,round_id=round_id)
 		if not result:
-			db.insert("rounds",number=number,round_id=round_id,score=0)
+			db.insert("rounds",number=number,round_id=round_id,score=0, current_hole=1)
 
 		db.update("players",where="number=$number",vars=locals(),current_round=round_id)
 		return "joined round"
 
+def add_score_new(number,new_score,hole=0):
+
+	result = db.query("SELECT players.current_round,rounds.number,"
+                    "current_hole,score FROM rounds INNER JOIN players ON "
+                    "rounds.number = players.number AND "
+                    "current_round = round_id AND "
+                    "players.number = $number", vars={'number':number})
+
+	if not result:
+		return "Database error"
+	
+	for results in result:
+		current_hole = results.current_hole
+		rid = int(results.current_round)
+		current_score = results.score
+
+	if current_hole is None: 
+		#BAIL
+		return 'cannot continue scoring this round'
+
+	db.insert("scores",number=number,round_id=rid,hole=current_hole,score=new_score)
+	current_hole = current_hole + 1
+
+	if current_hole < 19:
+		db.query("UPDATE rounds SET score=$new_score+$current_score, "
+				"current_hole=$current_hole WHERE round_id=$rid AND number=$number", 
+				vars={'rid':rid,'new_score':new_score,'current_score':current_score,
+				'number':number, 'current_hole':current_hole})
+	else:
+		db.update("rounds",where="round_id=$rid and number=$number",vars=locals(),current_hole=web.db.SQLLiteral('NULL'))
+
 def add_score(number,score,hole=2):
 
-#we are disregarding the hole at this point so you can simply send your score
+#now we are going to start tracking the hole the player is on
 
 	if int(hole) < 1 or int(hole) > 18:
 		print "invalid hole"
