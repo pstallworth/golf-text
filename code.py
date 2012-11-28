@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys, os
 import web
+web.config.debug = True
 
 try:
     import mymodel
@@ -20,9 +21,6 @@ except ImportError:
 	finally:
 		sys.path.remove(os.path.dirname(__file__))
 
-
-web.config.debug = False
-
 urls = (
 	'/', 'index',
 	'/create_player', 'create_player',
@@ -37,7 +35,7 @@ render = web.template.render('/var/www/templates', cache=False)
 class index:
 	def GET(self):
 		web.header('Content-Type', 'text/html')
-		return "<h1>Hello, world</h1>"
+		return "Hello, world"
 #	def GET(self,data):
 #		web.header('Content-Type', 'text/xml')
 #		return "Hello, world"
