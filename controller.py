@@ -25,5 +25,7 @@ def handle(number, message, mtype):
 		return mymodel.add_score_new(number,int(cmd_str[1]))
 	elif cmd_str[0] == "score" and len(cmd_str) == 1:
 		return mymodel.get_score(number)
+	elif cmd_str[0] == "name" and len(cmd_str) == 2:
+		return mymodel.add_name(number, cmd_str[1])
 	else:
 		return "invalid command"

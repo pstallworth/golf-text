@@ -139,3 +139,8 @@ def valid_round(round_id):
 		return False
 	else:
 		return True;
+
+def add_name(number, name):
+
+	db.update("players",where="number=$number",vars=locals(),name=name)
+
