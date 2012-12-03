@@ -71,12 +71,16 @@ def add_score_new(number,new_score,hole=0):
 				"current_hole=$current_hole WHERE round_id=$rid AND number=$number", 
 				vars={'rid':rid,'new_score':new_score,'current_score':current_score,
 				'number':number, 'current_hole':current_hole})
+#		db.update("rounds",where="round_id=$rid and number=$number",vars=locals(),
+#				score=new_score+current_score,current_hole=current_hole)
 	else:
-		db.update("rounds",where="round_id=$rid and number=$number",vars=locals(),current_hole=web.db.SQLLiteral('NULL'))
+		db.update("rounds",where="round_id=$rid and number=$number",vars=locals(),
+				current_hole=web.db.SQLLiteral('NULL'),score=current_score+new_score)
 
 def add_score(number,score,hole=2):
 
-#now we are going to start tracking the hole the player is on
+# Deprecated
+# now we are going to start tracking the hole the player is on
 
 	if int(hole) < 1 or int(hole) > 18:
 		print "invalid hole"
