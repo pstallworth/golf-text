@@ -27,5 +27,7 @@ def handle(number, message, mtype):
 		return mymodel.get_score(number)
 	elif cmd_str[0] == "name" and len(cmd_str) == 2:
 		return mymodel.add_name(number, cmd_str[1])
+	elif cmd_str[0] == 'combine' and len(cmd_str) == 3:
+		return mymodel.combine(cmd_str[1], cmd_str[2])
 	else:
 		return "invalid command"

@@ -3,6 +3,36 @@ import web
 # Should db connection go somewhere else?
 db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
 
+"""
+ combine - returns the net score of the current round of the two players 
+ whose names are are passed into the function.  If one of the two player's 
+ names does not exist in the database, function exits.
+
+ Because the query ORs the existence of the players we checked for both
+ in the beginning, but this does mean that if one player doesn't finish the
+ round, their partial scores can be used in calculating the net.
+"""
+def combine(player1, player2):
+
+	if not check_player_name(player1):
+		return "Player name %s not found" % player1
+	elif not check_player_name(player2):
+		return "Player name %s not found" % player2
+
+	result = db.query("select hole, min(score) as score from scores inner join players "
+					"on players.number = scores.number where "
+					"players.current_round = scores.round_id "
+					"AND (players.name = $player1 or players.name = $player2) "
+					"group by hole", vars={'player1':player1,'player2':player2})
+
+	if not result:
+		return "query failed to return results"
+
+	total_score = 0
+	for res in result:
+		total_score = total_score + res.score
+
+	return "net %s" % total_score
 
 def create_player(phone_number, name="golfer"):
 
@@ -128,9 +158,17 @@ def get_score(number,round_id=0):
 def check_player(number):
 	result = db.where("players",number=number)
 	if not result:
-		return False;
+		return False
 	elif result[0].number == number:
-		return True;
+		return True
+
+def check_player_name(name):
+	result = db.where("players",name=name)
+
+	if not result:
+		return False
+	elif result[0].name == name:
+		return True
 
 def valid_round(round_id):
 
