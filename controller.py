@@ -31,5 +31,7 @@ def handle(number, message, mtype):
 		return mymodel.combine(cmd_str[1], cmd_str[2])
 	elif cmd_str[0] == 'compare' and len(cmd_str) == 3:
 		return mymodel.compare(cmd_str[1], cmd_str[2])
+	elif cmd_str[0] == 'match' and len(cmd_str) == 5:
+		return mymodel.match(cmd_str[1], cmd_str[2], cmd_str[3], cmd_str[4])
 	else:
 		return "invalid command"

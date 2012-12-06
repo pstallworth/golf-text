@@ -4,6 +4,30 @@ import web
 db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
 
 """
+  match - plays a 4-player, 2v2 match and returns the winning team
+  Input assumption is that player1 and player2 are on the same team
+  and player3 and player4 are on the same team.  The help for this function
+  will show it used like match team1 team1 team2 team2 or something similar
+  to indicate where the playeres for each team belong
+"""
+def match(player1, player2, player3, player4):
+
+	for player in (player1, player2, player3, player4):
+		if not check_player_name(player):
+			return "Player %s not in system" % player
+
+	
+	team1 = combine(player1, player2).split()
+	team2 = combine(player3, player4).split()
+
+	if team1[1] < team2[1]:
+		return "%s and %s win" % (player1, player2)
+	elif team2[1] < team1[1]:
+		return "%s and %s win" % (player3, player4)
+	else:
+		return "Tie"
+
+"""
   compare - compares the scores of the two players passed in and 
   returns the name of the winning player for the match. If one
   of the two players d.n.e in the database, function exits.
