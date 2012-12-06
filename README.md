@@ -11,6 +11,7 @@ Basic commands are as follows:
 "score **number**" - adds the submitted score to the running total for the round currently associated to the player  
 "score" - returns the current score for the current round  
 "name **name**" - sets the player name for the associated number, defaults to 'golfer'
+"combine" **player1 name** **player2 name** - combines the current round scores for the two players, return net score
 
 I use [Plivo](http://www.plivo.com) to handle the SMS sending/receiving so all I have to do is deal with the
-request query and returning the XML response.
+request query and returning the XML response, which I do with [web.py](http://webpy.org).
