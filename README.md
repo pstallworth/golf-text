@@ -8,6 +8,7 @@ Basic commands are as follows:
 
 "create" - adds a new entry into the players table associated with the number sending the text  
 "round" - creates a new round and associates the round to the player sending the text  
+"join **round_id**" - joins the given round, marking it as the player's current_round and associating future scores with that round  
 "score **number**" - adds the submitted score to the running total for the round currently associated to the player  
 "score" - returns the current score for the current round  
 "name **name**" - sets the player name for the associated number, defaults to 'golfer'  
