@@ -4,6 +4,34 @@ import web
 db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
 
 """
+  compare - compares the scores of the two players passed in and 
+  returns the name of the winning player for the match. If one
+  of the two players d.n.e in the database, function exits.
+"""
+def compare(player1, player2):
+
+	if not check_player_name(player1):
+		return "Player name %s not found" % player1
+	elif not check_player_name(player2):
+		return "Player name %s not found" % player2
+
+	result = db.query("select sum(S.score) as player1, sum(T.score) as player2 from " 
+				"scores S inner join scores T on S.hole = T.hole inner join players P "
+				"on P.number = S.number inner join players R on R.number = T.number " 
+				"where P.name = $player1 and R.name = $player2 ",
+				vars={'player1':player1,'player2':player2})[0]
+
+	if not result:
+		return "Internal Error"
+
+	if result.player1 < result.player2:
+		return "%s wins by %s" % (player1, abs(result.player1 - result.player2))
+	elif result.player2 < result.player1:
+		return "%s wins by %s" % (player2, abs(result.player2 - result.player1))
+	else:
+		return "Tie"	
+	
+"""
  combine - returns the net score of the current round of the two players 
  whose names are are passed into the function.  If one of the two player's 
  names does not exist in the database, function exits.
