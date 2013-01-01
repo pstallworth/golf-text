@@ -14,7 +14,9 @@ Basic commands are as follows:
 "name **name**" - sets the player name for the associated number, defaults to 'golfer'  
 "combine **player_name** **player_name**" - combines the current round scores for the two players, return net score  
 "compare **player_name** **player_name**" - compare two players and return the stroke winner  
-"match **team1_player_name** **team1_player_name** **team2_player_name** **team2_player_name** - combine the scores for each team and compare with other team, returning winning pair  
+"match **team1_player_name** **team1_player_name** **team2_player_name** **team2_player_name**" - combine the scores for each team and compare with other team, returning winning pair  
+"front" - returns score for first nine holes  
+"back" - returns score for second nine holes  
 
 I use [Plivo](http://www.plivo.com) to handle the SMS sending/receiving so all I have to do is deal with the
 request query and returning the XML response, which I do with [web.py](http://webpy.org).
