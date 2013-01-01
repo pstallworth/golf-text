@@ -33,5 +33,11 @@ def handle(number, message, mtype):
 		return mymodel.compare(cmd_str[1], cmd_str[2])
 	elif cmd_str[0] == 'match' and len(cmd_str) == 5:
 		return mymodel.match(cmd_str[1], cmd_str[2], cmd_str[3], cmd_str[4])
+	elif cmd_str[0] == 'scores' and len(cmd_str) == 1:
+		return mymodel.scores(number)
+	elif cmd_str[0] == 'front' and len(cmd_str) == 1:
+		return mymodel.front_nine(number)
+	elif cmd_str[0] == 'back' and len(cmd_str) == 1:
+		return mymodel.back_nine(number)
 	else:
 		return "invalid command"

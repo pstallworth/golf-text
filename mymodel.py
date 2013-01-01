@@ -1,8 +1,63 @@
 #!/usr/bin/env python
 import web
+import os
 # Should db connection go somewhere else?
 db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
 
+
+"""
+  front_nine - returns the scores for the first 9 holes
+"""
+def front_nine(number):
+
+	current_round = get_current_round(number)
+	results = db.select("scores",vars=locals(),what="score",
+					where="number=$number AND round_id=$current_round " 
+					"AND hole >= 1 AND hole < 10")
+
+	if not results or results is None:
+		return "No current round for the player"
+	
+	currScore = 0
+	for result in results:
+		currScore += result.score
+
+	return currScore
+
+"""
+  back_nine - returns the score for the last 9 holes
+"""
+def back_nine(number):
+	
+	current_round = get_current_round(number)
+	results = db.select("scores",vars=locals(),what="score",
+					where="number=$number AND round_id=$current_round "
+					"AND hole >= 10 AND hole < 19")
+
+	if not results or results is None:
+		return "No current round for player"
+
+	currScore = 0
+	for result in results:
+		currScore += result.score
+
+	return currScore
+"""
+  scores - returns list of all submitted scores for current round
+"""
+def scores(number):
+		
+	current_round = get_current_round(number)
+	results = db.select("scores",vars=locals(), what="hole,score", where="number=$number and round_id=$current_round")
+
+	if not results or results is None:
+		return "No current round for player"
+
+	scoresString = ""
+	for result in results:
+		scoresString = scoresString + "%s:%s, " % (result.hole,result.score)
+
+	return scoresString 
 """
   match - plays a 4-player, 2v2 match and returns the winning team
   Input assumption is that player1 and player2 are on the same team
@@ -238,3 +293,8 @@ def add_name(number, name):
 
 	db.update("players",where="number=$number",vars=locals(),name=name)
 
+def get_current_round(number):
+	
+	results = db.select("players",what="current_round", where="number=$number",vars=locals())
+
+	return results[0].current_round
