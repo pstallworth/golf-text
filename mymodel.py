@@ -159,9 +159,7 @@ def create_round(number):
 # a round then they wanted to be in that round as well, so the call to 
 # join_round() at the end reflects that assumption
 
-	rounds = db.select("rounds",what="round_id")
-	rid = len(rounds)+1
-	db.insert("rounds", number=number, round_id=rid, score=0, current_hole=1)
+	rid = db.insert("rounds", number=number, score=0, current_hole=1)
 	join_round(number,rid)
 	return rid
 
