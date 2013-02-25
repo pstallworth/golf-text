@@ -2,7 +2,7 @@
 import web
 import os
 # Should db connection go somewhere else?
-db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
+db = web.database(dbn="mysql", db="golf", user=*****, pw=*****)
 
 
 """
