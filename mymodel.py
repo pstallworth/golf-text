@@ -2,7 +2,6 @@
 import web
 import os
 # Should db connection go somewhere else?
-db = web.database(dbn="mysql", db="golf", user=*****, pw=*****)
 
 
 """
@@ -45,18 +44,26 @@ def back_nine(number):
 """
   scores - returns list of all submitted scores for current round
 """
-def scores(number):
-		
-	current_round = get_current_round(number)
-	results = db.select("scores",vars=locals(), what="hole,score", where="number=$number and round_id=$current_round")
+def scores(number, round_id=0):
+	
+	if round_id == 0:
+		current_round = get_current_round(number)
+		results = db.select("scores",vars=locals(), what="hole,score", where="number=$number and round_id=$current_round")
+	else:
+		results = db.select("scores",vars=locals(), what="hole,score", where="number=$number and round_id=$round_id")
 
 	if not results or results is None:
 		return "No current round for player"
 
-	scoresString = ""
-	for result in results:
-		scoresString = scoresString + "%s:%s, " % (result.hole,result.score)
-
+	#send this back to phone
+	if round_id == 0:
+		scoresString = ""
+		for result in results:
+			scoresString = scoresString + "%s:%s, " % (result.hole,result.score)
+	else:
+	#send this back to browser
+		return results
+	
 	return scoresString 
 """
   match - plays a 4-player, 2v2 match and returns the winning team
@@ -253,11 +260,11 @@ def get_score(number,round_id=0):
 		# Round_id passed in, so use it
 		result = db.where("rounds",what="score",round_id=round_id,number=number)
 		if not result:
-			print "invalid round id, maybe needs to be converted to int?"
+			#print "invalid round id, maybe needs to be converted to int?"
 			return "invalid round id"
 		else:
 			score = result[0].score
-			print "score %s" % score
+			#print "score %s" % score
 			return score
 
 def check_player(number):

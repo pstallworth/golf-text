@@ -1,33 +1,17 @@
 #!/usr/bin/env python
 import sys, os
 import web
+
+sys.path.append(os.path.dirname(__file__))
+
+import mymodel
+import controller
+import forms
+
 web.config.debug = True
-
-try:
-    import mymodel
-except ImportError:
-    sys.path.append(os.path.dirname(__file__))
-    try:
-        import mymodel
-    finally:
-        sys.path.remove(os.path.dirname(__file__))
-
-try:
-	import controller
-except ImportError:
-	sys.path.append(os.path.dirname(__file__))
-	try:
-		import controller
-	finally:
-		sys.path.remove(os.path.dirname(__file__))
-
 urls = (
 	'/', 'index',
-	'/create_player', 'create_player',
-	'/add_score', 'add_score',
-	'/create_round', 'create_round',
-	'/join_round', 'join_round',
-	'/get_score', 'get_score',
+	'/get_round', 'get_round',
 )
 
 render = web.template.render('/var/www/templates', cache=False)
@@ -46,6 +30,18 @@ class index:
 		web.header('Content-Type', 'text/xml')
 		return render.response(data.From, res)
 
+
+class get_round:
+	def GET(self):
+		render = web.template.render('/var/www/templates', cache=False)
+		theform = forms.get_round()
+		web.header('Content-Type', 'text/html')
+		return render.get_round(theform)
+	def POST(self):
+		data = web.input()
+		web.header('Content-Type', 'text/html')
+		return render.scorecard(controller.get_round(data.number, data.round))
+
 app = web.application(urls, globals(), autoreload=False)
 application = app.wsgifunc()
 
@@ -54,4 +50,3 @@ def is_test():
 		return os.environ['WEBPY_ENV'] == 'test'
 
 if (not is_test()) and  __name__ == "__main__": app.run()
-
