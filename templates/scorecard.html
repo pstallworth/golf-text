@@ -1,0 +1,17 @@
+$def with (scores)
+
+<table>
+	<tr>
+		<th colspan="18">Scorecard</th>
+	</tr>
+	<tr class="holes">
+	$for i in range(1,19):
+		<td>$i</td>
+	</tr>
+	<tr class="scores">
+	$for each_score in scores:
+		<td>
+		$(each_score.score)
+		</td>
+	</tr>
+</table>

@@ -1,0 +1,6 @@
+$def with (form)
+
+<form name="main" method="post">
+$if not form.valid: <p>Form Not Valid</p>
+$:form.render()
+<input type="submit" value="Lookup round" /></form>
