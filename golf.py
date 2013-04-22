@@ -4,7 +4,7 @@ import web
 
 sys.path.append(os.path.dirname(__file__))
 
-import mymodel
+import db
 import controller
 import forms
 
