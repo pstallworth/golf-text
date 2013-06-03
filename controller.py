@@ -9,10 +9,9 @@ except ImportError:
         sys.path.remove(os.path.dirname(__file__))
 
 
-def handle(number, message, mtype):
+def handle(number, message, mtype='sms'):
 	
 	cmd_str = message.split()
-	
 	if cmd_str[0] == "create":
 		return db.create_player(number)
 	elif cmd_str[0] == "round":
@@ -25,9 +24,9 @@ def handle(number, message, mtype):
 		# need the round id, current hole, and total score to send to the new
 		# score command
 		return db.new_add_score(number, db.get_current_round(number),
-					db.get_current_hole(number), cmd_str[1], int(db.get_score(number)) + int(cmd_str[1]))
+								db.get_current_hole(number), cmd_str[1], 
+								int(db.get_score(number)) + int(cmd_str[1]))
 
-		#return db.add_score_new(number,int(cmd_str[1]))
 	elif cmd_str[0] == "score" and len(cmd_str) == 1:
 		return db.get_score(number)
 	elif cmd_str[0] == "name" and len(cmd_str) == 2:
@@ -45,9 +44,25 @@ def handle(number, message, mtype):
 		else:
 			return "Tie"
 	elif cmd_str[0] == 'match' and len(cmd_str) == 5:
-		return db.match(cmd_str[1], cmd_str[2], cmd_str[3], cmd_str[4])
+		for player in cmd_str[1:]:
+			if not check_player_name(player):
+				return "Player %s not in system" % player
+
+		team1 = combine(cmd_str[1], cmd_str[2]).split()
+		team2 = combine(cmd_str[3], cmd_str[4]).split()
+
+		if team1[1] < team2[1]:
+			return "%s and %s win" % (cmd_str[1], cmd_str[2])
+		elif team2[1] < team1[1]:
+			return "%s and %s win" % (cmd_str[3], cmd_str[4])
+		else:
+			return "Tie"
+
 	elif cmd_str[0] == 'scores' and len(cmd_str) == 1:
-		return db.scores(number)
+		scores = db.scores(number)
+
+		return ''.join('%s:%s, ' % (str(score.hole), str(score.score)) for score in scores)
+
 	elif cmd_str[0] == 'front' and len(cmd_str) == 1:
 		return db.front_nine(number)
 	elif cmd_str[0] == 'back' and len(cmd_str) == 1:

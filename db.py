@@ -2,6 +2,7 @@
 import web
 import os
 # Should db connection go somewhere else?
+db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
 
 def add_name(number, name):
 
@@ -107,10 +108,13 @@ def compare(player1, player2):
 	result = db.query("select sum(S.score) as player1, sum(T.score) as player2 from " 
 				"scores S inner join scores T on S.hole = T.hole inner join players P "
 				"on P.number = S.number inner join players R on R.number = T.number " 
-				"where P.name = $player1 and R.name = $player2 ",
+				"where P.name = $player1 and R.name = $player2 "
+				"and P.current_round = S.round_id "
+				"and R.current_round = T.round_id",
 				vars={'player1':player1,'player2':player2})[0]
 
 	if not result:
+		print "Error with db query"
 		return "Error, could not run scores"
 
 	return result
@@ -131,7 +135,7 @@ def combine(player1, player2):
 	elif not check_player_name(player2):
 		return "Player name %s not found" % player2
 
-	result = db.query("select sum(best_scores.scores) as low_score from "
+	result = db.query("select sum(best_scores.score) as low_score from "
 					"(select hole, min(score) as score from scores inner join players "
 					"on players.number = scores.number where "
 					"players.current_round = scores.round_id "
@@ -295,10 +299,13 @@ def new_add_score(number, round_id, current_hole, hole_score, tot_score):
 				vars={'round_id':round_id,'tot_score':tot_score, 'number':number, 
 				'current_hole':current_hole})
 	else:
-		db.update("rounds",where="round_id=$rid and number=$number",vars=locals(),
+		db.update("rounds",where="round_id=$round_id and number=$number",vars=locals(),
 				current_hole=web.db.SQLLiteral('NULL'),score=tot_score)
 
 """
+	deprecated - this had nothing to do with the db really so i moved
+	it all out to controller.py since it is nothing but other functions calls
+
   match - plays a 4-player, 2v2 match and returns the winning team
   Input assumption is that player1 and player2 are on the same team
   and player3 and player4 are on the same team.  The help for this function
@@ -336,16 +343,7 @@ def scores(number, round_id=0):
 	if not results or results is None:
 		return "No current round for player"
 
-	#send this back to phone
-	if round_id == 0:
-		scoresString = ""
-		for result in results:
-			scoresString = scoresString + "%s:%s, " % (result.hole,result.score)
-	else:
-	#send this back to browser
-		return results
-	
-	return scoresString 
+	return results
 
 def valid_round(round_id):
 

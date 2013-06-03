@@ -26,10 +26,19 @@ class index:
 #		return render.response("19366451048", data)
 	def POST(self):
 		data = web.input()
-		res = controller.handle(data.From, data.Text.lower(), data.Type)
+		try:
+			if data.Text:
+				agent = 'plivo'
+				res = controller.handle(data.From, data.Text.lower(), data.Type)
+		except AttributeError:
+			agent = 'twilio'
+			res = controller.handle(data.From[1:], data.Body.lower())
+			
 		web.header('Content-Type', 'text/xml')
-		return render.response(data.From, res)
-
+		if agent == 'plivo':
+			return render.response(data.From, res)
+		elif agent == 'twilio':
+			return render.twilio(data.From, res)
 
 class get_round:
 	def GET(self):
