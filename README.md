@@ -19,5 +19,5 @@ Basic commands are as follows:
 "front" - returns score for first nine holes  
 "back" - returns score for second nine holes  
 
-I use [Plivo](http://www.plivo.com) to handle the SMS sending/receiving so all I have to do is deal with the
+I use [Twilio](http://www.twilio.com) and [Plivo](http://www.plivo.com) to handle the SMS sending/receiving so all I have to do is deal with the
 request query and returning the XML response, which I do with [web.py](http://webpy.org).
