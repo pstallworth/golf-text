@@ -2,7 +2,8 @@ golf-text
 =========
 
 SMS-based golf score recording app.  This web app is built to receive sms (text message) requests for
-managing rounds of golf and calculating scores.
+managing rounds of golf and calculating scores.  If you're interested in trying it out ping me at pstallworth (at) gmail. 
+ All feedback is appreciated.
 
 Basic commands are as follows:  
 
