@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import web
 import os
-# Should db connection go somewhere else?
+
+# Replace dummy values below with environment variables
 db = web.database(dbn="mysql", db="golf", user="ubuntu", pw="ubuntu")
 
 def add_name(number, name):
